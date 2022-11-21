@@ -42,7 +42,7 @@ contract Escrow{
 */
     event EscrowSupplied(address token, bytes32 txs, uint256 amount);
     event FundsReceived(bytes32 txs, uint256 amount, address merchant);
-    event FundsWithdrawn(bytes32 txs, uint256 amount, address buyer);
+    event FundsWithdrawn(bytes32 txs, uint256 amount, address trader);
     event NewMerchantAdded(address[] _merchants);
     event MerchantsRemoved(address[] _merchantId);
 
@@ -97,12 +97,12 @@ contract Escrow{
     ///@param _txDetails - The text-transaction details in bytes32(most important for withdrawal)
     ///@param _amount - The amount supplied
     ///@param _txId - transaction index
-    ///@param _buyer - the buyer
-    function receiveFunds(bytes32 _txDetails, address _token, uint256 _amount, uint256 _txId, address _buyer) external {
+    ///@param _trader - the trader
+    function receiveFunds(bytes32 _txDetails, address _token, uint256 _amount, uint256 _txId, address _trader) external {
         require(merchants[msg.sender] == true, "NOT_MERCHANT");
-        require(!received[txs[_buyer][_txId]], "ALREADY_WITHDRAWN");
+        require(!received[txs[_trader][_txId]], "ALREADY_WITHDRAWN");
 
-        bytes32 _tx = txs[_buyer][_txId];
+        bytes32 _tx = txs[_trader][_txId];
         bytes memory txDetails = bytes.concat(_tx);
         (bytes32 data, address txToken, uint256 amount) = abi.decode(txDetails, (bytes32, address, uint256));
         require(data == _txDetails);
